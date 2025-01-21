@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天気予報アプリ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .search-box {
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 8px;
+            font-size: 16px;
+            width: 200px;
+        }
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>天気予報アプリ</h1>
+        <div class="search-box">
+            <input type="text" id="cityInput" placeholder="都市名を入力">
+            <button onclick="getWeather()">天気を確認</button>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function getWeather() {
+            const city = document.getElementById('cityInput').value;
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                const response = await fetch(`/weather/${city}`);
+                const data = await response.json();
+                
+                if (data.cod === 200) {
+                    resultDiv.innerHTML = `
+                        <h2>${data.name}の天気</h2>
+                        <p>気温: ${data.main.temp}°C</p>
+                        <p>天気: ${data.weather[0].main}</p>
+                        <p>湿度: ${data.main.humidity}%</p>
+                    `;
+                } else {
+                    resultDiv.innerHTML = '<p>都市が見つかりませんでした。</p>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<p>エラーが発生しました。</p>';
+            }
+        }
+    </script>
+</body>
+</html>
